@@ -1,0 +1,33 @@
+{
+    "name": "pxt-deepsea",
+    "version": "0.1.0",
+    "description": "深海探險隊：給低年級的簡化積木（潛艇遙控、傾斜駕駛、聲納雷達、雙屏尋寶）",
+    "license": "MIT",
+    "dependencies": {
+        "core": "*",
+        "bluetooth": "*"
+    },
+    "files": [
+        "README.md",
+        "deepsea.ts"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "yotta": {
+        "config": {
+            "microbit-dal": {
+                "bluetooth": {
+                    "open": 1,
+                    "whitelist": 0,
+                    "security_level": null
+                }
+            }
+        }
+    },
+    "supportedTargets": [
+        "microbit"
+    ],
+    "preferredEditor": "blocksprj",
+    "icon": "icon.png"
+}
