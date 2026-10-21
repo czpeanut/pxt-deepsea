@@ -60,8 +60,8 @@ namespace deepsea {
     let mode = 0
     let started = false
     let size = 5
-    let subX = 2
-    let subY = 2
+    let subX = 0
+    let subY = 0
     let mineXs: number[] = []
     let mineYs: number[] = []
     let treasureX = 0
