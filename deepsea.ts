@@ -124,10 +124,27 @@ namespace deepsea {
         return false
     }
 
+    // 炸完之後，水雷搬到新的隨機位置（1～4，不會在起點 0, 0，也不和別顆水雷重疊）
+    function moveMine(x: number, y: number): void {
+        for (let k = 0; k < mineXs.length; k++) {
+            if (mineXs[k] != x || mineYs[k] != y) continue
+            let nx = 0, ny = 0
+            for (let t = 0; t < 20; t++) {
+                nx = randint(1, size - 1)
+                ny = randint(1, size - 1)
+                if (!isMine(nx, ny)) break
+            }
+            mineXs[k] = nx
+            mineYs[k] = ny
+            return
+        }
+    }
+
     function checkHit(): void {
         if (!isMine(subX, subY)) return
         busy = true
         bluetooth.uartWriteString("boom#")
+        moveMine(subX, subY)
         if (hitHandler) hitHandler()
         busy = false
     }
@@ -187,7 +204,7 @@ namespace deepsea {
     }
 
     /**
-     * 潛艇和水雷在同一格時要做的事
+     * 潛艇和水雷在同一格時要做的事。撞到之後水雷會自動搬到新的位置。
      */
     //% blockId=deepsea_on_hit block="當撞到水雷" group="第五課 潛艇出航" weight=60
     export function onHitMine(handler: () => void): void {
