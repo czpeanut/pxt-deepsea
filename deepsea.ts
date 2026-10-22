@@ -76,6 +76,7 @@ namespace deepsea {
     let tiltSending = false
     let tiltDriving = false
     let beeping = false
+    let buttonSeaOn = false
 
     function ensure(): void {
         if (started) return
@@ -93,6 +94,7 @@ namespace deepsea {
             const cmds = "fblr"
             const i = cmds.indexOf(msg)
             if (msg.length == 1 && i >= 0) {
+                if (buttonSeaOn) move(i == 0 ? SubDir.Up : i == 1 ? SubDir.Down : i == 2 ? SubDir.Left : SubDir.Right)
                 if (cmdHandlers[i]) cmdHandlers[i]()
             } else if (msg == "g") {
                 if (msgHandlers[0]) msgHandlers[0]()
@@ -149,6 +151,13 @@ namespace deepsea {
         busy = false
     }
 
+    // 把潛艇座標（和雷達開著時的距離 d）傳給聲納尋寶網頁
+    function sendSub(): void {
+        bluetooth.uartWriteValue("x", subX)
+        bluetooth.uartWriteValue("y", subY)
+        if (beeping) bluetooth.uartWriteValue("d", distance())
+    }
+
     function checkFound(): void {
         if (distance() != 0) return
         busy = true
@@ -190,7 +199,10 @@ namespace deepsea {
         subX = Math.constrain(subX, 0, size - 1)
         subY = Math.constrain(subY, 0, size - 1)
         if (mode == 1) checkHit()
-        if (size == 10) checkFound()
+        if (size == 10) {
+            sendSub()
+            checkFound()
+        }
     }
 
     /**
@@ -274,9 +286,22 @@ namespace deepsea {
     // ---------------- 第七課 聲納雷達 ----------------
 
     /**
-     * 海底變成 10×10。傾斜就移動潛艇，並把座標傳給聲納尋寶網頁。
+     * 海底變成 10×10。按聲納尋寶網頁上的方向鍵，潛艇就走一格，
+     * micro:bit 會把座標（和雷達開著時的距離）傳回網頁。
      */
-    //% blockId=deepsea_tilt_drive block="用傾斜開潛艇（10×10 大海）" group="第七課 聲納雷達" weight=100
+    //% blockId=deepsea_button_sea block="開進 10×10 大海（平板按鈕開）" group="第七課 聲納雷達" weight=100
+    export function buttonSea(): void {
+        ensure()
+        size = 10
+        subX = 5
+        subY = 5
+        buttonSeaOn = true
+    }
+
+    /**
+     * 舊版：傾斜開潛艇（10×10 大海）。新的課程改用「開進 10×10 大海（平板按鈕開）」。
+     */
+    //% blockId=deepsea_tilt_drive block="用傾斜開潛艇（10×10 大海）" group="第七課 聲納雷達" weight=99 blockHidden=true
     export function tiltDrive(): void {
         ensure()
         size = 10
