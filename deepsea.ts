@@ -294,6 +294,7 @@ namespace deepsea {
                 else if (ay > 300) move(SubDir.Down)
                 bluetooth.uartWriteValue("x", subX)
                 bluetooth.uartWriteValue("y", subY)
+                if (beeping) bluetooth.uartWriteValue("d", distance())
                 basic.pause(300)
             }
         })
@@ -326,23 +327,12 @@ namespace deepsea {
     }
 
     /**
-     * 越近嗶得越快，10 格以外不叫
+     * 雷達嗶嗶聲：把距離傳給平板，由平板發出嗶嗶聲（越近越快，10 格以外不叫）。
+     * micro:bit 連著藍牙時不能播聲音，會當機（哭臉 070），所以聲音交給平板。
      */
-    //% blockId=deepsea_beep block="開啟雷達嗶嗶聲" group="第七課 聲納雷達" weight=60
+    //% blockId=deepsea_beep block="開啟雷達嗶嗶聲（平板發聲）" group="第七課 聲納雷達" weight=60
     export function radarBeep(): void {
-        if (beeping) return
         beeping = true
-        control.inBackground(function () {
-            while (true) {
-                const d = distance()
-                if (d < 10) {
-                    music.playTone(1319, music.beat(BeatFraction.Sixteenth))
-                    basic.pause(d * 100)
-                } else {
-                    basic.pause(200)
-                }
-            }
-        })
     }
 
     /**

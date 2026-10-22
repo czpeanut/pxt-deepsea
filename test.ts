@@ -13,7 +13,6 @@ deepsea.onCommand(SubCommand.Right, function () {
     deepsea.move(SubDir.Right)
 })
 deepsea.onHitMine(function () {
-    music.playTone(131, music.beat(BeatFraction.Half))
     basic.showIcon(IconNames.Square)
     basic.showIcon(IconNames.SmallSquare)
     deepsea.goTo(0, 0)
