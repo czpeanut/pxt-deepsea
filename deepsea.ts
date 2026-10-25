@@ -160,7 +160,6 @@ namespace deepsea {
     function checkFound(): void {
         if (distance() != 0) return
         busy = true
-        if (beeping) basic.pause(100) // 等雷達嗶聲播完，再送 found#（送訊號同時播聲音會當機 070）
         bluetooth.uartWriteString("found#")
         if (foundHandler) foundHandler()
         hideTreasure()
@@ -351,21 +350,17 @@ namespace deepsea {
     }
 
     /**
-     * 越近嗶得越快，10 格以外不叫（micro:bit 喇叭）
+     * 雷達嗶嗶聲（電腦發聲）：一直把距離 d 傳給聲納尋寶網頁，網頁越近嗶得越快，10 格以外不叫。
+     * micro:bit 連著藍牙時播聲音會當機（哭臉 070），所以聲音交給電腦。
      */
-    //% blockId=deepsea_beep block="開啟雷達嗶嗶聲" group="第七課 聲納雷達" weight=60
+    //% blockId=deepsea_beep block="開啟雷達嗶嗶聲（電腦發聲）" group="第七課 聲納雷達" weight=60
     export function radarBeep(): void {
         if (beeping) return
         beeping = true
         control.inBackground(function () {
             while (true) {
-                const d = distance()
-                if (d < 10 && !busy) {
-                    music.playTone(1319, music.beat(BeatFraction.Sixteenth))
-                    basic.pause(d * 100)
-                } else {
-                    basic.pause(200)
-                }
+                if (!busy) bluetooth.uartWriteValue("d", distance())
+                basic.pause(300)
             }
         })
     }
