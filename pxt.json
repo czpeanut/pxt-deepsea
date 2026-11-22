@@ -1,15 +1,17 @@
 {
     "name": "pxt-deepsea",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "深海探險隊：給低年級的簡化積木（潛艇遙控、傾斜駕駛、聲納雷達、雙屏尋寶）",
     "license": "MIT",
     "dependencies": {
         "core": "*",
-        "bluetooth": "*"
+        "bluetooth": "*",
+        "settings": "*"
     },
     "files": [
         "README.md",
-        "deepsea.ts"
+        "deepsea.ts",
+        "link.ts"
     ],
     "testFiles": [
         "test.ts"

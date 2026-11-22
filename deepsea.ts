@@ -81,7 +81,6 @@ namespace deepsea {
     function ensure(): void {
         if (started) return
         started = true
-        bluetooth.startUartService()
         bluetooth.onBluetoothConnected(function () {
             basic.showIcon(IconNames.Yes)
             basic.pause(300)
@@ -89,8 +88,8 @@ namespace deepsea {
         bluetooth.onBluetoothDisconnected(function () {
             basic.showIcon(IconNames.No)
         })
-        bluetooth.onUartDataReceived(serial.delimiters(Delimiters.Hash), function () {
-            const msg = bluetooth.uartReadUntil(serial.delimiters(Delimiters.Hash))
+        // 藍牙和收訊息由「酷丁狐連線」（link.ts）統一管理，這裡只處理深海探險自己的訊息
+        kdlink.onMessage(function (msg: string) {
             const cmds = "fblr"
             const i = cmds.indexOf(msg)
             if (msg.length == 1 && i >= 0) {
